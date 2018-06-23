@@ -13,6 +13,12 @@ app.use(bodyParser.urlencoded({'extended':'false'}));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/books', express.static(path.join(__dirname, 'dist')));
 app.use('/book', book);
+app.use('/api/auth', auth);
+
+
+var auth = require('./routes/auth');
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -31,5 +37,11 @@ app.use(function(err, req, res, next) {
 
     res.status(err.statusCode || 500).json(err);
 });
+
+var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+mongoose.connect('mongodb://localhost/mevn-secure', { promiseLibrary: require('bluebird') })
+  .then(() =>  console.log('connection succesful'))
+  .catch((err) => console.error(err));
 
 module.exports = app;
